@@ -46,7 +46,8 @@ public class PlayerController : MonoBehaviour
             movementInput.y
         ).normalized;
 
-        Vector3 moveDirection = GetCameraRelativeDirection(inputDirection);
+        Vector3 moveDirection =
+            GetCameraRelativeDirection(inputDirection);
 
         // Roter karakteren i bevegelsesretningen
         if (moveDirection.sqrMagnitude > 0.01f)
@@ -61,7 +62,7 @@ public class PlayerController : MonoBehaviour
             );
         }
 
-        // Hopping og gravitasjon
+        // Hopp og gravitasjon
         if (characterController.isGrounded)
         {
             verticalVelocity = groundedForce;
@@ -93,26 +94,34 @@ public class PlayerController : MonoBehaviour
         // Tastatur
         if (Keyboard.current != null)
         {
-            if (Keyboard.current.aKey.isPressed ||
-                Keyboard.current.leftArrowKey.isPressed)
+            if (
+                Keyboard.current.aKey.isPressed ||
+                Keyboard.current.leftArrowKey.isPressed
+            )
             {
                 input.x -= 1f;
             }
 
-            if (Keyboard.current.dKey.isPressed ||
-                Keyboard.current.rightArrowKey.isPressed)
+            if (
+                Keyboard.current.dKey.isPressed ||
+                Keyboard.current.rightArrowKey.isPressed
+            )
             {
                 input.x += 1f;
             }
 
-            if (Keyboard.current.sKey.isPressed ||
-                Keyboard.current.downArrowKey.isPressed)
+            if (
+                Keyboard.current.sKey.isPressed ||
+                Keyboard.current.downArrowKey.isPressed
+            )
             {
                 input.y -= 1f;
             }
 
-            if (Keyboard.current.wKey.isPressed ||
-                Keyboard.current.upArrowKey.isPressed)
+            if (
+                Keyboard.current.wKey.isPressed ||
+                Keyboard.current.upArrowKey.isPressed
+            )
             {
                 input.y += 1f;
             }
@@ -144,8 +153,10 @@ public class PlayerController : MonoBehaviour
     {
         bool keyboardRun =
             Keyboard.current != null &&
-            (Keyboard.current.leftShiftKey.isPressed ||
-             Keyboard.current.rightShiftKey.isPressed);
+            (
+                Keyboard.current.leftShiftKey.isPressed ||
+                Keyboard.current.rightShiftKey.isPressed
+            );
 
         bool gamepadRun =
             Gamepad.current != null &&

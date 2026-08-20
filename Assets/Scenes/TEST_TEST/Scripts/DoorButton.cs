@@ -10,6 +10,9 @@ public class DoorButton : MonoBehaviour
     [Tooltip("Trapper som skal spawnes når knappen aktiveres.")]
     [SerializeField] private StairSpawner[] stairSpawners;
 
+    [Tooltip("Plattformer som skal starte når knappen aktiveres.")]
+    [SerializeField] private MovingPlatform[] movingPlatforms;
+
     [Header("Innstillinger")]
     [Tooltip("Når denne er på, kan knappen bare brukes én gang.")]
     [SerializeField] private bool oneUse = true;
@@ -81,10 +84,14 @@ public class DoorButton : MonoBehaviour
     {
         bool hasDoors = doors != null && doors.Length > 0;
         bool hasStairs = stairSpawners != null && stairSpawners.Length > 0;
+        bool hasPlatforms = movingPlatforms != null && movingPlatforms.Length > 0;
 
-        if (!hasDoors && !hasStairs)
+        if (!hasDoors && !hasStairs && !hasPlatforms)
         {
-            Debug.LogError("Ingen dører eller trapper er koblet til DoorButton.", this);
+            Debug.LogError(
+                "Ingen dører, trapper eller plattformer er koblet til DoorButton.",
+                this
+            );
             return;
         }
 
@@ -115,6 +122,26 @@ public class DoorButton : MonoBehaviour
                 if (stairSpawner != null)
                 {
                     stairSpawner.SpawnStairs();
+                }
+            }
+        }
+
+        if (hasPlatforms)
+        {
+            foreach (MovingPlatform movingPlatform in movingPlatforms)
+            {
+                if (movingPlatform == null)
+                {
+                    continue;
+                }
+
+                if (oneUse)
+                {
+                    movingPlatform.StartPlatform();
+                }
+                else
+                {
+                    movingPlatform.TogglePlatform();
                 }
             }
         }

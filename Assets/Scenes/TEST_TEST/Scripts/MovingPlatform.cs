@@ -10,14 +10,22 @@ public class MovingPlatform : MonoBehaviour
     [Header("Bevegelse")]
     [SerializeField, Min(0.01f)] private float speed = 2f;
     [SerializeField, Min(0f)] private float waitTime = 1f;
+    [Tooltip("Tiden fra aktivering til plattformen begynner å bevege seg.")]
+    [SerializeField, Min(0f)] private float startDelay = 3f;
     [SerializeField] private bool startAutomatically = true;
     [SerializeField] private bool loop = true;
+
+    [Header("Plattformsekvens")]
+    [Tooltip("Plattformer som starter når denne plattformen når Point B.")]
+    [SerializeField] private MovingPlatform[] nextPlatforms;
 
     private Rigidbody platformRigidbody;
     private Transform currentTarget;
     private float waitTimer;
     private bool isMoving;
     private bool hasCompletedJourney;
+    private bool isWaitingToStart;
+    private float startDelayTimer;
 
     private void Awake()
     {
@@ -40,11 +48,29 @@ public class MovingPlatform : MonoBehaviour
 
         platformRigidbody.position = pointA.position;
         currentTarget = pointB;
-        isMoving = startAutomatically;
+        isMoving = false;
+
+        if (startAutomatically)
+        {
+            StartPlatform();
+        }
     }
 
     private void FixedUpdate()
     {
+        if (isWaitingToStart)
+        {
+            startDelayTimer -= Time.fixedDeltaTime;
+
+            if (startDelayTimer <= 0f)
+            {
+                isWaitingToStart = false;
+                isMoving = true;
+            }
+
+            return;
+        }
+
         if (!isMoving || currentTarget == null)
         {
             return;
@@ -76,6 +102,8 @@ public class MovingPlatform : MonoBehaviour
 
         if (currentTarget == pointB)
         {
+            StartNextPlatforms();
+
             if (!loop)
             {
                 isMoving = false;
@@ -91,22 +119,55 @@ public class MovingPlatform : MonoBehaviour
         }
     }
 
+    private void StartNextPlatforms()
+    {
+        if (nextPlatforms == null)
+        {
+            return;
+        }
+
+        foreach (MovingPlatform nextPlatform in nextPlatforms)
+        {
+            if (nextPlatform != null)
+            {
+                nextPlatform.StartPlatform();
+            }
+        }
+    }
+
     public void StartPlatform()
     {
-        if (!hasCompletedJourney || loop)
+        if (isMoving || isWaitingToStart)
+        {
+            return;
+        }
+
+        if (hasCompletedJourney && !loop)
+        {
+            return;
+        }
+
+        if (startDelay <= 0f)
         {
             isMoving = true;
+        }
+        else
+        {
+            startDelayTimer = startDelay;
+            isWaitingToStart = true;
         }
     }
 
     public void StopPlatform()
     {
         isMoving = false;
+        isWaitingToStart = false;
+        startDelayTimer = 0f;
     }
 
     public void TogglePlatform()
     {
-        if (isMoving)
+        if (isMoving || isWaitingToStart)
         {
             StopPlatform();
         }

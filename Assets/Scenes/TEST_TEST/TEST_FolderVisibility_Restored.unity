@@ -3760,7 +3760,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d8b88f2fe655c4f319798039feee8891, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.5976496
+      value: -1.21
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d8b88f2fe655c4f319798039feee8891, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4489,6 +4489,18 @@ PrefabInstance:
     - target: {fileID: 7000000000000000002, guid: d8ef8e71a5264bff9e40bb959bb46342, type: 3}
       propertyPath: m_RootOrder
       value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000000000000002, guid: d8ef8e71a5264bff9e40bb959bb46342, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000000000000002, guid: d8ef8e71a5264bff9e40bb959bb46342, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000000000000002, guid: d8ef8e71a5264bff9e40bb959bb46342, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7000000000000000005, guid: d8ef8e71a5264bff9e40bb959bb46342, type: 3}
       propertyPath: playerHealth

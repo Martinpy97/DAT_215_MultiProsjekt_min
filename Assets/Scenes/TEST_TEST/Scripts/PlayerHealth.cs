@@ -1,8 +1,14 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
+    public event Action<float, float> HealthChanged;
+    public event Action<float> Damaged;
+    public event Action Died;
+    public event Action Respawned;
+
     [Header("Liv")]
     [SerializeField] private float maxHealth = 5f;
     [SerializeField] private float currentHealth;
@@ -45,6 +51,7 @@ public class PlayerHealth : MonoBehaviour
         startingPosition = transform.position;
         startingRotation = transform.rotation;
 
+        maxHealth = Mathf.Max(1f, maxHealth);
         currentHealth = maxHealth;
     }
 
@@ -74,8 +81,19 @@ public class PlayerHealth : MonoBehaviour
             return;
         }
 
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(currentHealth, 0f);
+        float previousHealth = currentHealth;
+
+        currentHealth = Mathf.Max(
+            currentHealth - Mathf.Max(0f, damage),
+            0f
+        );
+
+        float damageTaken = previousHealth - currentHealth;
+
+        if (damageTaken <= 0f)
+        {
+            return;
+        }
 
         invulnerableUntil =
             Time.time + invulnerabilityDuration;
@@ -84,6 +102,9 @@ public class PlayerHealth : MonoBehaviour
             knockbackDirection,
             knockbackForce
         );
+
+        HealthChanged?.Invoke(currentHealth, maxHealth);
+        Damaged?.Invoke(damageTaken);
 
         Debug.Log(
             "Spilleren ble truffet. Liv: " +
@@ -96,6 +117,26 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth <= 0f)
         {
             StartCoroutine(DieAndRespawn());
+        }
+    }
+
+    public void Heal(float amount)
+    {
+        if (isDead || amount <= 0f)
+        {
+            return;
+        }
+
+        float previousHealth = currentHealth;
+
+        currentHealth = Mathf.Min(
+            currentHealth + amount,
+            maxHealth
+        );
+
+        if (!Mathf.Approximately(previousHealth, currentHealth))
+        {
+            HealthChanged?.Invoke(currentHealth, maxHealth);
         }
     }
 
@@ -145,6 +186,8 @@ public class PlayerHealth : MonoBehaviour
         isDead = true;
         knockbackVelocity = Vector3.zero;
 
+        Died?.Invoke();
+
         Debug.Log(
             "Spilleren døde. Respawner...",
             this
@@ -190,6 +233,8 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = maxHealth;
         knockbackVelocity = Vector3.zero;
 
+        HealthChanged?.Invoke(currentHealth, maxHealth);
+
         invulnerableUntil =
             Time.time + invulnerabilityDuration;
 
@@ -200,9 +245,18 @@ public class PlayerHealth : MonoBehaviour
             playerController.enabled = true;
         }
 
+        Respawned?.Invoke();
+
         Debug.Log(
             "Spilleren har respawnet.",
             this
         );
+    }
+
+    private void OnValidate()
+    {
+        maxHealth = Mathf.Max(1f, maxHealth);
+        invulnerabilityDuration = Mathf.Max(0f, invulnerabilityDuration);
+        respawnDelay = Mathf.Max(0f, respawnDelay);
     }
 }

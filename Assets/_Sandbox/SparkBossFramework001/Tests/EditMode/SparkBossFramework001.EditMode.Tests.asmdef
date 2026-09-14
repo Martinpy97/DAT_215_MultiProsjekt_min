@@ -1,0 +1,14 @@
+{
+  "name": "SparkBossFramework001.EditMode.Tests",
+  "references": [
+    "SparkBossFramework001.Core"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "overrideReferences": false,
+  "autoReferenced": true
+}

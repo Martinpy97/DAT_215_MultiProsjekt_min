@@ -1,0 +1,5 @@
+{
+  "name": "SparkBossFramework001.Unity",
+  "references": ["SparkBossFramework001.Core", "Unity.InputSystem"],
+  "autoReferenced": true
+}
